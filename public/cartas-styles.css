@@ -540,19 +540,27 @@ html, body {
         box-sizing: border-box;
     }
     .action-buttons {
-        width: 100vw;
-        max-width: 100vw;
-        min-width: 0;
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0.5rem 0.2rem;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        width: 100%;
+        margin: 0 auto;
     }
-    .btn, .btn-primary, .btn-secondary, .btn-danger, .btn-outline {
-        width: 100vw;
-        max-width: 100vw;
-        min-width: 0;
-        box-sizing: border-box;
-        margin: 0;
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger,
+    .btn-outline {
+        width: 90vw !important;
+        max-width: 320px !important;
+        min-width: 120px !important;
+        margin: 0.5rem auto !important;
+        display: block !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
+        font-size: 1.1rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
     }
     #drawing-canvas {
         width: 100vw !important;
@@ -561,6 +569,35 @@ html, body {
         box-sizing: border-box;
         display: block;
         margin: 0 auto 1rem auto;
+    }
+    .modal-content .btn,
+    .modal-content .btn-primary,
+    .modal-content .btn-secondary,
+    .modal-content .btn-danger,
+    .modal-content .btn-outline {
+        width: 90vw !important;
+        max-width: 320px !important;
+        min-width: 120px !important;
+        margin: 0.5rem auto !important;
+        display: block !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
+        font-size: 1.1rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    .modal-content .success-actions,
+    .modal-content .preview-actions {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .modal-content .link-container {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.5rem !important;
     }
 }
 
@@ -601,6 +638,22 @@ html, body {
         box-sizing: border-box !important;
         display: block;
         margin: 0 auto 1rem auto !important;
+    }
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger,
+    .btn-outline {
+        width: 95vw !important;
+        max-width: 98vw !important;
+        min-width: 120px !important;
+        margin: 0.4rem auto !important;
+        display: block !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
+        font-size: 1rem !important;
+        padding-left: 0.2rem !important;
+        padding-right: 0.2rem !important;
     }
 }
 

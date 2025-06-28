@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GiftSpark - Cartas y Regalos Virtuales</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <i class="fas fa-gift"></i>
+                <span>GiftSpark</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link">Inicio</a></li>
+                <li><a href="#gifts" class="nav-link">Regalos</a></li>
+                <li><a href="#cards" class="nav-link">Cartas</a></li>
+                <li><a href="#create" class="nav-link">Crear</a></li>
+                <li><a href="/cartas" class="nav-link special">🎨 Editor Avanzado</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Sección Hero -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="sparkle">✨</span>
+                Comparte el Amor
+                <span class="sparkle">✨</span>
+            </h1>
+            <p class="hero-subtitle">Crea cartas y regalos virtuales únicos para tus seres queridos</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('create')">
+                    <i class="fas fa-plus"></i> Crear Regalo
+                </button>
+                <button class="btn btn-secondary" onclick="scrollToSection('cards')">
+                    <i class="fas fa-heart"></i> Ver Cartas
+                </button>
+                <a href="/cartas" class="btn btn-accent">
+                    <i class="fas fa-paint-brush"></i> Editor Avanzado
+                </a>
+            </div>
+        </div>
+        <div class="hero-animation">
+            <div class="floating-hearts">
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Categorías -->
+    <section class="categories">
+        <h2 class="section-title">¿Para quién es tu regalo?</h2>
+        <div class="category-grid">
+            <div class="category-card" data-type="novia">
+                <i class="fas fa-heart"></i>
+                <h3>Mi Novia</h3>
+                <p>Expresa tu amor de forma especial</p>
+            </div>
+            <div class="category-card" data-type="novio">
+                <i class="fas fa-heart"></i>
+                <h3>Mi Novio</h3>
+                <p>Demuestra tu cariño</p>
+            </div>
+            <div class="category-card" data-type="amigo">
+                <i class="fas fa-handshake"></i>
+                <h3>Mi Amigo</h3>
+                <p>Celebra la amistad</p>
+            </div>
+            <div class="category-card" data-type="amiga">
+                <i class="fas fa-star"></i>
+                <h3>Mi Amiga</h3>
+                <p>Valora su amistad</p>
+            </div>
+            <div class="category-card" data-type="mejor-amigo">
+                <i class="fas fa-crown"></i>
+                <h3>Mi Mejor Amigo</h3>
+                <p>El compañero de siempre</p>
+            </div>
+            <div class="category-card" data-type="mejor-amiga">
+                <i class="fas fa-gem"></i>
+                <h3>Mi Mejor Amiga</h3>
+                <p>La hermana del alma</p>
+            </div>
+            <div class="category-card" data-type="crush">
+                <i class="fas fa-bolt"></i>
+                <h3>Mi Crush</h3>
+                <p>Declara tus sentimientos</p>
+            </div>
+            <div class="category-card" data-type="declaracion">
+                <i class="fas fa-rose"></i>
+                <h3>Declaración</h3>
+                <p>El momento perfecto</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Crear -->
+    <section id="create" class="create-section">
+        <h2 class="section-title">Crea tu Regalo Virtual</h2>
+        <div class="create-container">
+            <div class="create-tabs">
+                <button class="tab-btn active" data-tab="gift">🎁 Regalo Virtual</button>
+                <button class="tab-btn" data-tab="card">💌 Carta Virtual</button>
+            </div>
+            
+            <!-- Formulario de Regalo -->
+            <form id="gift-form" class="create-form active">
+                <div class="form-group">
+                    <label for="gift-title">Título del Regalo</label>
+                    <input type="text" id="gift-title" required placeholder="Ej: Un abrazo virtual">
+                </div>
+                <div class="form-group">
+                    <label for="gift-type">Tipo de Regalo</label>
+                    <select id="gift-type" required>
+                        <option value="">Selecciona el tipo</option>
+                        <option value="novia">Para mi Novia</option>
+                        <option value="novio">Para mi Novio</option>
+                        <option value="amigo">Para mi Amigo</option>
+                        <option value="amiga">Para mi Amiga</option>
+                        <option value="mejor-amigo">Para mi Mejor Amigo</option>
+                        <option value="mejor-amiga">Para mi Mejor Amiga</option>
+                        <option value="crush">Para mi Crush</option>
+                        <option value="declaracion">Declaración</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="gift-recipient">Para:</label>
+                    <input type="text" id="gift-recipient" required placeholder="Nombre de la persona">
+                </div>
+                <div class="form-group">
+                    <label for="gift-sender">De:</label>
+                    <input type="text" id="gift-sender" required placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                    <label for="gift-description">Descripción del Regalo</label>
+                    <textarea id="gift-description" required placeholder="Describe tu regalo virtual..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="gift-message">Mensaje Personal</label>
+                    <textarea id="gift-message" required placeholder="Escribe tu mensaje especial..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-magic"></i> Crear Regalo
+                </button>
+            </form>
+
+            <!-- Formulario de Carta -->
+            <form id="card-form" class="create-form">
+                <div class="form-group">
+                    <label for="card-title">Título de la Carta</label>
+                    <input type="text" id="card-title" required placeholder="Ej: Te extraño">
+                </div>
+                <div class="form-group">
+                    <label for="card-type">Tipo de Carta</label>
+                    <select id="card-type" required>
+                        <option value="">Selecciona el tipo</option>
+                        <option value="novia">Para mi Novia</option>
+                        <option value="novio">Para mi Novio</option>
+                        <option value="amigo">Para mi Amigo</option>
+                        <option value="amiga">Para mi Amiga</option>
+                        <option value="mejor-amigo">Para mi Mejor Amigo</option>
+                        <option value="mejor-amiga">Para mi Mejor Amiga</option>
+                        <option value="crush">Para mi Crush</option>
+                        <option value="declaracion">Declaración</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="card-recipient">Para:</label>
+                    <input type="text" id="card-recipient" required placeholder="Nombre de la persona">
+                </div>
+                <div class="form-group">
+                    <label for="card-sender">De:</label>
+                    <input type="text" id="card-sender" required placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                    <label for="card-design">Diseño de la Carta</label>
+                    <select id="card-design" required>
+                        <option value="romantic">Romántico</option>
+                        <option value="friendship">Amistad</option>
+                        <option value="elegant">Elegante</option>
+                        <option value="funny">Divertido</option>
+                        <option value="vintage">Vintage</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="card-content">Contenido de la Carta</label>
+                    <textarea id="card-content" required placeholder="Escribe tu carta..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-pen"></i> Crear Carta
+                    </button>
+                    <a href="/cartas" class="btn btn-accent">
+                        <i class="fas fa-paint-brush"></i> Editor Avanzado
+                    </a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Sección de Regalos -->
+    <section id="gifts" class="gifts-section">
+        <h2 class="section-title">Regalos Virtuales</h2>
+        <div id="gifts-container" class="gifts-grid">
+            <!-- Los regalos se cargarán dinámicamente -->
+        </div>
+    </section>
+
+    <!-- Sección de Cartas -->
+    <section id="cards" class="cards-section">
+        <h2 class="section-title">Cartas Virtuales</h2>
+        <div id="cards-container" class="cards-grid">
+            <!-- Las cartas se cargarán dinámicamente -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-gift"></i> GiftSpark</h3>
+                <p>Comparte el amor y la amistad de forma virtual</p>
+            </div>
+            <div class="footer-section">
+                <h4>Enlaces</h4>
+                <ul>
+                    <li><a href="#home">Inicio</a></li>
+                    <li><a href="#gifts">Regalos</a></li>
+                    <li><a href="#cards">Cartas</a></li>
+                    <li><a href="#create">Crear</a></li>
+                    <li><a href="/cartas">Editor Avanzado</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Síguenos</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 GiftSpark. Hecho con ❤️ para compartir amor</p>
+        </div>
+    </footer>
+
+    <!-- Modal para mostrar regalos/cartas -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="script.js"></script>
+</body>
+</html> 

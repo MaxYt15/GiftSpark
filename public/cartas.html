@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Carta Virtual - GiftSpark</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cartas-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <i class="fas fa-gift"></i>
+                <span>GiftSpark</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Inicio</a></li>
+                <li><a href="index.html#gifts" class="nav-link">Regalos</a></li>
+                <li><a href="index.html#cards" class="nav-link">Cartas</a></li>
+                <li><a href="index.html#create" class="nav-link">Crear</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Editor de Cartas -->
+    <div class="card-editor-container">
+        <!-- Barra de Herramientas -->
+        <div class="toolbar">
+            <div class="toolbar-section">
+                <h3><i class="fas fa-pen"></i> Herramientas de Texto</h3>
+                <div class="text-tools">
+                    <select id="font-family" class="tool-select">
+                        <option value="Dancing Script">Dancing Script</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                    </select>
+                    <select id="font-size" class="tool-select">
+                        <option value="16">16px</option>
+                        <option value="18">18px</option>
+                        <option value="20">20px</option>
+                        <option value="24">24px</option>
+                        <option value="28">28px</option>
+                        <option value="32">32px</option>
+                        <option value="36">36px</option>
+                        <option value="48">48px</option>
+                    </select>
+                    <input type="color" id="text-color" class="color-picker" value="#000000">
+                    <button id="bold-btn" class="tool-btn"><i class="fas fa-bold"></i></button>
+                    <button id="italic-btn" class="tool-btn"><i class="fas fa-italic"></i></button>
+                    <button id="underline-btn" class="tool-btn"><i class="fas fa-underline"></i></button>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <h3><i class="fas fa-paint-brush"></i> Herramientas de Dibujo</h3>
+                <div class="drawing-tools">
+                    <button id="pen-tool" class="tool-btn active"><i class="fas fa-pen"></i></button>
+                    <button id="eraser-tool" class="tool-btn"><i class="fas fa-eraser"></i></button>
+                    <input type="color" id="drawing-color" class="color-picker" value="#ff6b9d">
+                    <select id="brush-size" class="tool-select">
+                        <option value="2">Fino</option>
+                        <option value="5" selected>Medio</option>
+                        <option value="10">Grueso</option>
+                        <option value="20">Muy Grueso</option>
+                    </select>
+                    <button id="clear-canvas" class="tool-btn danger"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <h3><i class="fas fa-image"></i> Multimedia</h3>
+                <div class="media-tools">
+                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                    <button id="add-image-btn" class="tool-btn"><i class="fas fa-image"></i> Agregar Imagen</button>
+                    <input type="file" id="music-upload" accept="audio/*" style="display: none;">
+                    <button id="add-music-btn" class="tool-btn"><i class="fas fa-music"></i> Agregar Música</button>
+                    <div id="music-info" class="music-info" style="display: none;">
+                        <span id="music-name"></span>
+                        <span id="music-duration"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de Trabajo -->
+        <div class="workspace">
+            <!-- Panel de Vista Previa -->
+            <div class="preview-panel">
+                <h3>Vista Previa de la Carta</h3>
+                <div class="card-preview" id="card-preview">
+                    <div class="card-content" id="card-content">
+                        <div class="text-area" id="text-area" contenteditable="true">
+                            Escribe tu mensaje aquí...
+                        </div>
+                        <canvas id="drawing-canvas" width="400" height="300"></canvas>
+                        <div id="image-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Configuración -->
+            <div class="config-panel">
+                <h3>Configuración de la Carta</h3>
+                
+                <div class="form-group">
+                    <label for="card-title">Título de la Carta</label>
+                    <input type="text" id="card-title" placeholder="Ej: Te extraño mucho">
+                </div>
+
+                <div class="form-group">
+                    <label for="card-type">Tipo de Carta</label>
+                    <select id="card-type" required>
+                        <option value="">Selecciona el tipo</option>
+                        <option value="novia">Para mi Novia</option>
+                        <option value="novio">Para mi Novio</option>
+                        <option value="amigo">Para mi Amigo</option>
+                        <option value="amiga">Para mi Amiga</option>
+                        <option value="mejor-amigo">Para mi Mejor Amigo</option>
+                        <option value="mejor-amiga">Para mi Mejor Amiga</option>
+                        <option value="crush">Para mi Crush</option>
+                        <option value="declaracion">Declaración</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="card-recipient">Para:</label>
+                    <input type="text" id="card-recipient" placeholder="Nombre de la persona">
+                </div>
+
+                <div class="form-group">
+                    <label for="card-sender">De:</label>
+                    <input type="text" id="card-sender" placeholder="Tu nombre">
+                </div>
+
+                <div class="form-group">
+                    <label for="card-design">Diseño de Fondo</label>
+                    <select id="card-design">
+                        <option value="romantic">Romántico</option>
+                        <option value="friendship">Amistad</option>
+                        <option value="elegant">Elegante</option>
+                        <option value="funny">Divertido</option>
+                        <option value="vintage">Vintage</option>
+                        <option value="custom">Personalizado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Visibilidad</label>
+                    <div class="visibility-options">
+                        <label class="radio-option">
+                            <input type="radio" name="visibility" value="public" checked>
+                            <span class="radio-custom"></span>
+                            <i class="fas fa-globe"></i> Público
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="visibility" value="private">
+                            <span class="radio-custom"></span>
+                            <i class="fas fa-lock"></i> Privado
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="card-message">Mensaje Adicional</label>
+                    <textarea id="card-message" placeholder="Un mensaje especial para acompañar tu carta..."></textarea>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="save-card" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Carta
+                    </button>
+                    <button id="preview-card" class="btn btn-secondary">
+                        <i class="fas fa-eye"></i> Vista Previa
+                    </button>
+                    <button id="clear-all" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Limpiar Todo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Vista Previa -->
+    <div id="preview-modal" class="modal">
+        <div class="modal-content preview-modal">
+            <span class="close">&times;</span>
+            <div class="preview-header">
+                <h2 id="preview-title">Vista Previa de la Carta</h2>
+                <div class="music-controls" id="music-controls" style="display: none;">
+                    <audio id="preview-audio" controls>
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                </div>
+            </div>
+            <div class="preview-body" id="preview-body">
+                <!-- El contenido de la carta se mostrará aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Carta Creada -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content success-modal">
+            <span class="close">&times;</span>
+            <div class="success-content">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2>¡Carta Creada Exitosamente!</h2>
+                <p id="success-message"></p>
+                <div id="private-link" style="display: none;">
+                    <h3>Link Privado:</h3>
+                    <div class="link-container">
+                        <input type="text" id="private-link-input" readonly>
+                        <button id="copy-link" class="btn btn-primary">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                </div>
+                <div class="success-actions">
+                    <button id="view-card" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> Ver Carta
+                    </button>
+                    <button id="create-another" class="btn btn-secondary">
+                        <i class="fas fa-plus"></i> Crear Otra
+                    </button>
+                    <button id="go-home" class="btn btn-outline">
+                        <i class="fas fa-home"></i> Ir al Inicio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="cartas.js"></script>
+</body>
+</html> 

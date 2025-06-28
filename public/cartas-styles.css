@@ -1,0 +1,628 @@
+/* Estilos específicos para la página de cartas */
+
+html, body {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+.card-editor-container {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    overflow-x: hidden;
+    padding-top: 52px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Barra de Herramientas */
+.toolbar {
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+}
+
+.toolbar-section {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.toolbar-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.toolbar-section h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.text-tools,
+.drawing-tools,
+.media-tools {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.tool-select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.color-picker {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tool-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.tool-btn:hover {
+    background: #f8f9fa;
+    border-color: var(--primary-color);
+}
+
+.tool-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.tool-btn.danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.tool-btn.danger:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.music-info {
+    background: #f8f9fa;
+    padding: 0.5rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Área de Trabajo */
+.workspace {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    overflow-x: hidden;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Panel de Vista Previa */
+.preview-panel {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.preview-panel h3 {
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+}
+
+.card-preview {
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    min-height: 500px;
+    padding: 2rem;
+    background: #fafafa;
+    position: relative;
+}
+
+.card-content {
+    position: relative;
+    min-height: 400px;
+}
+
+.text-area {
+    min-height: 200px;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    font-family: 'Dancing Script', cursive;
+    font-size: 18px;
+    line-height: 1.6;
+    outline: none;
+    background: white;
+}
+
+.text-area:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+}
+
+#drawing-canvas {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+    cursor: crosshair;
+    margin-bottom: 1rem;
+}
+
+#image-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.image-item {
+    position: relative;
+    max-width: 200px;
+}
+
+.image-item img {
+    max-width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.remove-image {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* Panel de Configuración */
+.config-panel {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    height: fit-content;
+    position: sticky;
+    top: 200px;
+}
+
+.config-panel h3 {
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Opciones de Visibilidad */
+.visibility-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.radio-option:hover {
+    background: #f8f9fa;
+}
+
+.radio-option input[type="radio"] {
+    display: none;
+}
+
+.radio-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.radio-option input[type="radio"]:checked + .radio-custom {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+}
+
+.radio-option input[type="radio"]:checked + .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+/* Botones de Acción */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+}
+
+.btn-secondary {
+    background: var(--gradient-secondary);
+    color: white;
+    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Modal de Vista Previa */
+.preview-modal {
+    max-width: 800px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.music-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.music-controls audio {
+    max-width: 300px;
+}
+
+.preview-body {
+    padding: 2rem;
+    background: #fafafa;
+    border-radius: 10px;
+    min-height: 400px;
+}
+
+/* Modal de Éxito */
+.success-modal {
+    max-width: 600px;
+    text-align: center;
+}
+
+.success-content {
+    padding: 2rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #4ecdc4;
+    margin-bottom: 1rem;
+}
+
+.success-content h2 {
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+}
+
+.link-container {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.link-container input {
+    flex: 1;
+    padding: 0.8rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.success-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .workspace {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+    }
+    .config-panel {
+        position: static;
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+    }
+}
+
+@media (max-width: 768px) {
+    html, body, .card-editor-container, .workspace {
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    .header {
+        height: 44px;
+        min-height: 44px;
+    }
+    .card-editor-container {
+        padding-top: 44px;
+    }
+    .toolbar {
+        padding: 0.5rem;
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+        box-sizing: border-box;
+        margin-top: 0.5rem;
+        margin-bottom: 1.2rem;
+        border-radius: 8px;
+    }
+    .text-tools,
+    .drawing-tools,
+    .media-tools {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+    }
+    .tool-btn {
+        justify-content: center;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+    .preview-panel,
+    .config-panel {
+        padding: 1rem;
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+    .card-preview {
+        padding: 1rem;
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+    #drawing-canvas {
+        width: 100vw !important;
+        min-width: 0;
+        max-width: 100vw;
+        height: 200px !important;
+        box-sizing: border-box;
+    }
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        height: 38px;
+        min-height: 38px;
+    }
+    .card-editor-container {
+        padding-top: 38px;
+    }
+    .toolbar-section h3, .preview-panel h3, .config-panel h3 {
+        font-size: 1rem;
+    }
+    .btn, .btn-primary, .btn-secondary, .btn-danger, .btn-outline {
+        font-size: 1rem;
+        padding: 0.8rem 0.2rem;
+        width: 100vw;
+        min-width: 0;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+    .modal-content {
+        padding: 0.5rem;
+        width: 99vw;
+        max-width: 99vw;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.preview-panel,
+.config-panel {
+    animation: fadeInUp 0.6s ease;
+}
+
+/* Estados de carga */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Header compacto y moderno para editor de cartas */
+.header {
+    height: 52px;
+    min-height: 52px;
+    padding: 0;
+} 

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Carta - GiftSpark</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/ver-carta-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <i class="fas fa-gift"></i>
+                <span>GiftSpark</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/index.html" class="nav-link">Inicio</a></li>
+                <li><a href="/index.html#gifts" class="nav-link">Regalos</a></li>
+                <li><a href="/index.html#cards" class="nav-link">Cartas</a></li>
+                <li><a href="/index.html#create" class="nav-link">Crear</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenedor de la Carta -->
+    <div class="card-viewer-container">
+        <div class="card-viewer">
+            <!-- Encabezado de la Carta -->
+            <div class="card-header">
+                <h1 id="card-title">Cargando carta...</h1>
+                <div class="card-meta">
+                    <p><strong>Para:</strong> <span id="card-recipient">-</span></p>
+                    <p><strong>De:</strong> <span id="card-sender">-</span></p>
+                    <p><strong>Tipo:</strong> <span id="card-type">-</span></p>
+                </div>
+            </div>
+
+            <!-- Controles de Música -->
+            <div class="music-controls" id="music-controls" style="display: none;">
+                <div class="music-info">
+                    <i class="fas fa-music"></i>
+                    <span id="music-name">Música de la carta</span>
+                </div>
+                <div class="music-player">
+                    <audio id="card-audio" controls>
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                    <div class="music-buttons">
+                        <button id="play-pause" class="music-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button id="stop-music" class="music-btn">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                        <button id="mute-music" class="music-btn">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido de la Carta -->
+            <div class="card-content" id="card-content">
+                <div class="loading-spinner">
+                    <i class="fas fa-heart"></i>
+                    <p>Cargando tu carta especial...</p>
+                </div>
+            </div>
+
+            <!-- Mensaje Adicional -->
+            <div class="card-message" id="card-message" style="display: none;">
+                <h3>Mensaje Especial</h3>
+                <p id="message-text"></p>
+            </div>
+
+            <!-- Acciones -->
+            <div class="card-actions">
+                <button id="like-card" class="btn btn-primary">
+                    <i class="fas fa-heart"></i> Me gusta
+                </button>
+                <button id="share-card" class="btn btn-secondary">
+                    <i class="fas fa-share"></i> Compartir
+                </button>
+                <button id="go-home" class="btn btn-outline">
+                    <i class="fas fa-home"></i> Ir al Inicio
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Error -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content error-modal">
+            <div class="error-content">
+                <i class="fas fa-exclamation-triangle error-icon"></i>
+                <h2>Carta No Encontrada</h2>
+                <p id="error-message">La carta que buscas no existe o ha sido eliminada.</p>
+                <button id="go-home-error" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Ir al Inicio
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="/ver-carta.js"></script>
+</body>
+</html> 

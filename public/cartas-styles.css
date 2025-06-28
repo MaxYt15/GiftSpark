@@ -467,17 +467,20 @@ html, body {
 @media (max-width: 1024px) {
     .workspace {
         grid-template-columns: 1fr;
-        gap: 1rem;
-        padding: 1rem;
+        gap: 0;
+        padding: 0;
+        max-width: 100vw;
+        margin: 0;
         width: 100vw;
         min-width: 0;
-        max-width: 100vw;
+        box-sizing: border-box;
     }
-    .config-panel {
-        position: static;
+    .preview-panel, .config-panel {
         width: 100vw;
-        min-width: 0;
         max-width: 100vw;
+        margin: 0;
+        border-radius: 0;
+        box-sizing: border-box;
     }
 }
 
@@ -522,33 +525,42 @@ html, body {
     }
     .preview-panel,
     .config-panel {
-        padding: 1rem;
+        padding: 0.5rem 0.2rem;
         width: 100vw;
-        min-width: 0;
         max-width: 100vw;
+        margin: 0;
+        border-radius: 0;
         box-sizing: border-box;
     }
     .card-preview {
-        padding: 1rem;
+        padding: 0.5rem 0.2rem;
         width: 100vw;
-        min-width: 0;
         max-width: 100vw;
-        box-sizing: border-box;
-    }
-    #drawing-canvas {
-        width: 100vw !important;
         min-width: 0;
-        max-width: 100vw;
-        height: 200px !important;
         box-sizing: border-box;
     }
     .action-buttons {
-        flex-direction: column;
-        gap: 0.5rem;
         width: 100vw;
-        min-width: 0;
         max-width: 100vw;
+        min-width: 0;
         box-sizing: border-box;
+        margin: 0;
+        padding: 0.5rem 0.2rem;
+    }
+    .btn, .btn-primary, .btn-secondary, .btn-danger, .btn-outline {
+        width: 100vw;
+        max-width: 100vw;
+        min-width: 0;
+        box-sizing: border-box;
+        margin: 0;
+    }
+    #drawing-canvas {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0;
+        box-sizing: border-box;
+        display: block;
+        margin: 0 auto 1rem auto;
     }
 }
 
@@ -563,18 +575,32 @@ html, body {
     .toolbar-section h3, .preview-panel h3, .config-panel h3 {
         font-size: 1rem;
     }
-    .btn, .btn-primary, .btn-secondary, .btn-danger, .btn-outline {
-        font-size: 1rem;
-        padding: 0.8rem 0.2rem;
-        width: 100vw;
-        min-width: 0;
-        max-width: 100vw;
-        box-sizing: border-box;
+    .preview-panel, .config-panel, .card-preview, .action-buttons, .btn, .btn-primary, .btn-secondary, .btn-danger, .btn-outline {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        padding-left: 0.1rem !important;
+        padding-right: 0.1rem !important;
     }
-    .modal-content {
-        padding: 0.5rem;
-        width: 99vw;
-        max-width: 99vw;
+    .workspace {
+        padding: 0 !important;
+        gap: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+    #drawing-canvas {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        display: block;
+        margin: 0 auto 1rem auto !important;
     }
 }
 

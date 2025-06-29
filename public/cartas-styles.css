@@ -517,11 +517,22 @@ html, body {
         min-width: 0;
         max-width: 100vw;
     }
-    .tool-btn {
-        justify-content: center;
-        width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
+    .tool-btn,
+    .tool-select,
+    .color-picker,
+    .toolbar button,
+    .toolbar input[type="button"],
+    .toolbar input[type="submit"] {
+        width: 90vw !important;
+        max-width: 320px !important;
+        min-width: 120px !important;
+        margin: 0.5rem auto !important;
+        display: block !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
+        font-size: 1.1rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
     }
     .preview-panel,
     .config-panel {

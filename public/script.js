@@ -24,11 +24,10 @@ const analytics = getAnalytics(app);
 let currentTab = 'gift';
 let gifts = [];
 let cards = [];
-let isConnected = false;
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+    initializeUI();
     setupFirebaseListeners();
 });
 
@@ -37,9 +36,6 @@ function setupFirebaseListeners() {
     // Listener para regalos en tiempo real
     const giftsRef = ref(database, 'gifts');
     onValue(giftsRef, (snapshot) => {
-        isConnected = true;
-        updateConnectionStatus();
-        
         if (snapshot.exists()) {
             gifts = [];
             snapshot.forEach((childSnapshot) => {
@@ -55,16 +51,11 @@ function setupFirebaseListeners() {
         }
     }, (error) => {
         console.error('Error listening to gifts:', error);
-        isConnected = false;
-        updateConnectionStatus();
     });
 
     // Listener para cartas en tiempo real
     const cardsRef = ref(database, 'cards');
     onValue(cardsRef, (snapshot) => {
-        isConnected = true;
-        updateConnectionStatus();
-        
         if (snapshot.exists()) {
             cards = [];
             snapshot.forEach((childSnapshot) => {
@@ -80,50 +71,13 @@ function setupFirebaseListeners() {
         }
     }, (error) => {
         console.error('Error listening to cards:', error);
-        isConnected = false;
-        updateConnectionStatus();
     });
 }
 
-// Actualizar estado de conexión
-function updateConnectionStatus() {
-    const statusElement = document.getElementById('connection-status');
-    if (!statusElement) {
-        // Crear elemento de estado si no existe
-        const header = document.querySelector('.nav');
-        const statusDiv = document.createElement('div');
-        statusDiv.id = 'connection-status';
-        statusDiv.style.cssText = `
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 1001;
-            transition: all 0.3s ease;
-        `;
-        document.body.appendChild(statusDiv);
-    }
-    
-    const statusDiv = document.getElementById('connection-status');
-    if (isConnected) {
-        statusDiv.textContent = '🟢 Conectado';
-        statusDiv.style.background = '#4ecdc4';
-        statusDiv.style.color = 'white';
-    } else {
-        statusDiv.textContent = '🔴 Desconectado';
-        statusDiv.style.background = '#ff6b9d';
-        statusDiv.style.color = 'white';
-    }
-}
-
 // Función de inicialización
-function initializeApp() {
+function initializeUI() {
     setupEventListeners();
     setupAnimations();
-    updateConnectionStatus();
 }
 
 // Configurar event listeners
@@ -232,11 +186,6 @@ function selectCategory(type) {
 async function handleGiftSubmit(e) {
     e.preventDefault();
     
-    if (!isConnected) {
-        showErrorMessage('No hay conexión con la base de datos. Inténtalo de nuevo.');
-        return;
-    }
-    
     const formData = {
         title: document.getElementById('gift-title').value,
         type: document.getElementById('gift-type').value,
@@ -271,11 +220,6 @@ async function handleGiftSubmit(e) {
 // Manejar envío de carta usando Firebase
 async function handleCardSubmit(e) {
     e.preventDefault();
-    
-    if (!isConnected) {
-        showErrorMessage('No hay conexión con la base de datos. Inténtalo de nuevo.');
-        return;
-    }
     
     const formData = {
         title: document.getElementById('card-title').value,
@@ -460,11 +404,6 @@ function closeModal() {
 async function likeGift(giftId, event) {
     if (event) event.stopPropagation();
     
-    if (!isConnected) {
-        showErrorMessage('No hay conexión con la base de datos.');
-        return;
-    }
-    
     try {
         const giftRef = ref(database, `gifts/${giftId}`);
         const gift = gifts.find(g => g.id === giftId);
@@ -488,11 +427,6 @@ async function likeGift(giftId, event) {
 // Dar like a carta usando Firebase
 async function likeCard(cardId, event) {
     if (event) event.stopPropagation();
-    
-    if (!isConnected) {
-        showErrorMessage('No hay conexión con la base de datos.');
-        return;
-    }
     
     try {
         const cardRef = ref(database, `cards/${cardId}`);

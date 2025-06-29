@@ -98,7 +98,6 @@ function setupEventListeners() {
 // Configurar editor de texto
 function setupTextEditor() {
     const fontFamily = document.getElementById('font-family');
-    const fontSize = document.getElementById('font-size');
     const textColor = document.getElementById('text-color');
     const boldBtn = document.getElementById('bold-btn');
     const italicBtn = document.getElementById('italic-btn');
@@ -107,12 +106,6 @@ function setupTextEditor() {
     // Cambiar fuente
     fontFamily.addEventListener('change', () => {
         document.execCommand('fontName', false, fontFamily.value);
-        textArea.focus();
-    });
-    
-    // Cambiar tamaño
-    fontSize.addEventListener('change', () => {
-        document.execCommand('fontSize', false, fontSize.value);
         textArea.focus();
     });
     

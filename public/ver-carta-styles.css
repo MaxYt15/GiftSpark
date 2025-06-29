@@ -43,11 +43,11 @@ body {
   text-align: center;
   padding-top: 2.5rem !important;
 }
-.card-header h1 {
+/* .card-header h1 {
   font-family: 'Dancing Script', cursive;
   font-size: 2rem;
   margin-bottom: 0.5rem;
-}
+} */
 .card-meta {
   display: flex;
   justify-content: space-between;
@@ -140,10 +140,16 @@ body {
   }
   .card-viewer-container {
     align-items: flex-start !important;
-    padding-top: 8rem !important;
+    padding-top: calc(4rem + env(safe-area-inset-top, 0px)) !important;
   }
   .card-header + .card-content {
     margin-top: 1.2rem !important;
+  }
+  .card-header #card-title, #card-title {
+    font-size: 0.7rem !important;
+    margin-top: 1.2rem !important;
+    line-height: 1.15 !important;
+    word-break: break-word;
   }
 }
 
@@ -403,4 +409,11 @@ body {
   .card-viewer {
     padding-top: 0.7rem;
   }
+}
+
+.card-header #card-title, #card-title {
+  font-size: 2.5rem !important;
+  margin-top: 1.2rem !important;
+  line-height: 1.15 !important;
+  word-break: break-word;
 } 

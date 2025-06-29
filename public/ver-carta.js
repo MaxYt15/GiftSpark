@@ -24,6 +24,8 @@ const analytics = getAnalytics(app);
 let currentCard = null;
 let isPlaying = false;
 let isMuted = false;
+let iaChatHistory = [];
+let card = null;
 
 // Elementos del DOM
 const cardTitle = document.getElementById('card-title');
@@ -44,11 +46,22 @@ const shareBtn = document.getElementById('share-card');
 const goHomeBtn = document.getElementById('go-home');
 const errorModal = document.getElementById('error-modal');
 const goHomeErrorBtn = document.getElementById('go-home-error');
+const iaChatBtn = document.getElementById('ia-chat-btn');
+const iaChatWindow = document.getElementById('ia-chat-window');
+const iaChatClose = document.getElementById('ia-chat-close');
+const iaChatForm = document.getElementById('ia-chat-form');
+const iaChatInput = document.getElementById('ia-chat-input');
+const iaChatMessages = document.getElementById('ia-chat-messages');
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
     loadCard();
     setupEventListeners();
+});
+
+// Al inicio, ocultar el botón de chat IA
+window.addEventListener('DOMContentLoaded', () => {
+  if (iaChatBtn) iaChatBtn.style.display = 'none';
 });
 
 // Cargar carta
@@ -146,7 +159,8 @@ function getCardCodeFromPath() {
 }
 
 // Mostrar carta
-function displayCard(card) {
+function displayCard(cardData) {
+    card = cardData;
     // Configurar título de la página
     document.title = `${card.title} - GiftSpark`;
     
@@ -202,6 +216,8 @@ function displayCard(card) {
     if (likeCount) {
         likeCount.textContent = card.likes ? `(${card.likes})` : '';
     }
+
+    iaChatBtn.style.display = 'flex';
 }
 
 // Configurar música
@@ -262,6 +278,75 @@ function setupEventListeners() {
     
     // Eventos del audio
     cardAudio.addEventListener('volumechange', updateMuteButton);
+
+    // --- CHAT IA ---
+    iaChatBtn.addEventListener('click', async () => {
+        iaChatWindow.style.display = 'flex';
+        iaChatBtn.style.display = 'none';
+        iaChatInput.focus();
+        // Si es la primera vez, pedir recomendación breve
+        if (iaChatHistory.length === 0) {
+            iaChatMessages.innerHTML = `<div class='ia-chat-message ia-chat-ia'><div class='ia-chat-bubble'>Espera, generando recomendación breve...</div></div>`;
+            try {
+                // Validar que card y sus campos existen
+                if (!card || !card.recipient || !card.sender || !card.type) {
+                    iaChatMessages.innerHTML = `<div class='ia-chat-message ia-chat-ia'><div class='ia-chat-bubble'>No se pudo obtener recomendación (datos incompletos).</div></div>`;
+                    return;
+                }
+                const mensajePlano = card.content ? card.content.replace(/<[^>]*>/g, '').slice(0, 500) : '';
+                const res = await fetch('/api/ia-recommendation-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ history: [
+                        { role: 'user', text: `El siguiente mensaje es para ${card.recipient} de parte de ${card.sender}, tipo: ${getTypeLabel(card.type)}. El mensaje es: "${mensajePlano}". Por favor, da una recomendación breve, empática y útil para ${card.recipient} como si fueras un amigo o consejero.` }
+                    ] })
+                });
+                const data = await res.json();
+                iaChatMessages.innerHTML = `<div class='ia-chat-message ia-chat-ia'><div class='ia-chat-bubble'>${data.recommendation}</div></div>`;
+                iaChatHistory.push({ role: 'ia', text: data.recommendation });
+            } catch (e) {
+                iaChatMessages.innerHTML = `<div class='ia-chat-message ia-chat-ia'><div class='ia-chat-bubble'>No se pudo obtener recomendación.</div></div>`;
+            }
+        }
+    });
+    iaChatClose.addEventListener('click', () => {
+        iaChatWindow.style.display = 'none';
+        iaChatBtn.style.display = 'flex';
+        iaChatMessages.innerHTML = `<div class='ia-chat-message ia-chat-ia'><div class='ia-chat-bubble'>¡Hola! Soy la IA de GiftSpark. ¿Quieres una recomendación sobre esta carta o tienes alguna pregunta?</div></div>`;
+        iaChatHistory = [];
+    });
+    iaChatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userMsg = iaChatInput.value.trim();
+        if (!userMsg) return;
+        iaChatHistory.push({ role: 'user', text: userMsg });
+        iaChatMessages.innerHTML += `<div class='ia-chat-message ia-chat-user'><div class='ia-chat-bubble'>${userMsg}</div></div>`;
+        iaChatInput.value = '';
+        iaChatMessages.scrollTop = iaChatMessages.scrollHeight;
+        // Simulador de escribiendo
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'ia-chat-typing';
+        typingDiv.innerHTML = `<i class='fas fa-robot'></i> Escribiendo...`;
+        iaChatMessages.appendChild(typingDiv);
+        iaChatMessages.scrollTop = iaChatMessages.scrollHeight;
+        // Llamar a la IA con historial
+        try {
+            const res = await fetch('/api/ia-recommendation-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ history: iaChatHistory })
+            });
+            const data = await res.json();
+            typingDiv.remove();
+            iaChatHistory.push({ role: 'ia', text: data.recommendation });
+            iaChatMessages.innerHTML += `<div class='ia-chat-message ia-chat-ia'><div class='ia-chat-bubble'>${data.recommendation}</div></div>`;
+            iaChatMessages.scrollTop = iaChatMessages.scrollHeight;
+        } catch (e) {
+            typingDiv.remove();
+            iaChatMessages.innerHTML += `<div class='ia-chat-message ia-chat-ia'><div class='ia-chat-bubble'>No se pudo obtener respuesta de la IA.</div></div>`;
+            iaChatMessages.scrollTop = iaChatMessages.scrollHeight;
+        }
+    });
 }
 
 // Reproducir/Pausar música

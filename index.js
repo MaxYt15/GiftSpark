@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, get, set, update, query, orderByChild, equalTo } from 'firebase/database';
 import dotenv from 'dotenv';
+import fetch from 'node-fetch';
 
 // Cargar variables de entorno
 dotenv.config();
@@ -396,6 +397,46 @@ app.get('/cartas/:code', (req, res) => {
 // Catch-all para rutas que no sean API ni archivos estáticos
 app.get(/^\/((?!api|\/).)*$/, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.post('/api/ia-recommendation', async (req, res) => {
+  const { message, para, de, tipo } = req.body;
+  const prompt = `Eres un asistente empático. El siguiente mensaje es para ${para} de parte de ${de}, tipo: ${tipo}. El mensaje es: ${message}. Da una recomendación o respuesta empática para ${para}, como si fueras un amigo o consejero.`;
+  try {
+    const geminiRes = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDBTxVsshqPKG5ETQ8M1wh8Yp1jisySR34', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          { parts: [ { text: prompt } ] }
+        ]
+      })
+    });
+    const geminiData = await geminiRes.json();
+    const recommendation = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    res.json({ recommendation });
+  } catch (e) {
+    res.json({ recommendation: 'No se pudo obtener una recomendación.' });
+  }
+});
+
+app.post('/api/ia-recommendation-chat', async (req, res) => {
+  const { history } = req.body;
+  // Construir prompt con historial
+  const parts = history.map(h => ({ text: (h.role === 'user' ? 'Usuario: ' : 'IA: ') + h.text }));
+  parts.unshift({ text: 'Eres un asistente empático y consejero. Responde de forma breve, clara y empática.' });
+  try {
+    const geminiRes = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDBTxVsshqPKG5ETQ8M1wh8Yp1jisySR34', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [ { parts } ] })
+    });
+    const geminiData = await geminiRes.json();
+    const recommendation = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    res.json({ recommendation });
+  } catch (e) {
+    res.json({ recommendation: 'No se pudo obtener respuesta de la IA.' });
+  }
 });
 
 // Iniciar servidor

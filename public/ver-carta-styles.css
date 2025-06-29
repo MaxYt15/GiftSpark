@@ -22,6 +22,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 8rem !important;
 }
 .card-viewer {
   width: 100%;
@@ -33,6 +34,7 @@ body {
   display: flex;
   flex-direction: column;
   margin: 1.5rem 0.5rem;
+  padding-top: 1.5rem;
 }
 .card-header {
   background: linear-gradient(90deg, #ff6b9d 60%, #ff8e53 100%);
@@ -114,6 +116,7 @@ body {
   .card-viewer {
     max-width: 98vw;
     margin: 1rem 0.5vw;
+    padding-top: 0.7rem;
   }
   .card-header h1 { font-size: 1.3rem; }
   .card-content, .card-message, .card-actions {
@@ -137,7 +140,10 @@ body {
   }
   .card-viewer-container {
     align-items: flex-start !important;
-    padding-top: 1.2rem !important;
+    padding-top: 4rem !important;
+  }
+  .card-header + .card-content {
+    margin-top: 1.2rem !important;
   }
 }
 
@@ -367,5 +373,34 @@ body {
   .card-drawing img {
     max-width: 60vw;
     max-height: 60vw;
+  }
+}
+
+/* --- Separar imágenes y dibujos del texto para que no tapen el título --- */
+.card-images,
+.card-drawing {
+  margin-top: 1.2rem !important;
+}
+
+@media (max-width: 480px) {
+  .card-images,
+  .card-drawing {
+    margin-top: 0.8rem !important;
+  }
+}
+
+/* --- Espacio extra para que el título nunca se tape ni quede pegado arriba --- */
+.card-header + .card-content {
+  margin-top: 2.2rem !important;
+}
+
+/* Espacio extra en la carta para evitar que el contenido quede pegado arriba */
+.card-viewer {
+  padding-top: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .card-viewer {
+    padding-top: 0.7rem;
   }
 } 

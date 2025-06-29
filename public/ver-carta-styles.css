@@ -140,7 +140,7 @@ body {
   }
   .card-viewer-container {
     align-items: flex-start !important;
-    padding-top: 4rem !important;
+    padding-top: 8rem !important;
   }
   .card-header + .card-content {
     margin-top: 1.2rem !important;

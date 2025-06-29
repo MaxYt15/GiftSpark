@@ -59,6 +59,8 @@ body {
   padding: 1.2rem 1rem;
   min-height: 120px;
   word-break: break-word;
+  max-height: 340px;
+  overflow-y: auto;
 }
 .card-message {
   background: #f8f9fa;
@@ -153,33 +155,37 @@ body {
   }
 }
 
+@media (max-width: 600px) {
+  .card-content {
+    max-height: 140px;
+    padding-top: 1.5rem;
+    scroll-padding-top: 1.5rem;
+  }
+}
+
 /* --- Animación de Regalo/Caja --- */
 #gift-animation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   z-index: 2000;
   top: 0; left: 0; right: 0; bottom: 0;
   width: 100vw; height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: opacity 0.6s;
 }
 #gift-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   position: relative;
   width: 120px;
   height: 120px;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   animation: giftDrop 1.2s cubic-bezier(.68,-0.55,.27,1.55);
-}
-@keyframes giftDrop {
-  0% { transform: translateY(-300px) scale(0.7); opacity: 0; }
-  60% { transform: translateY(20px) scale(1.05); opacity: 1; }
-  80% { transform: translateY(-10px) scale(0.98); }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 .box-base {
   width: 120px;
@@ -238,9 +244,11 @@ body {
 }
 .gift-text {
   position: absolute;
-  bottom: -38px;
+  top: -2.8rem;
   left: 50%;
   transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
   color: #fff;
   font-size: 1.1rem;
   font-weight: 600;
@@ -249,6 +257,9 @@ body {
   padding: 0.5rem 1.2rem;
   border-radius: 16px;
   pointer-events: none;
+  width: max-content;
+  max-width: 220px;
+  z-index: 10;
 }
 /* Animación de apertura */
 #gift-box.open .box-lid {
@@ -416,4 +427,25 @@ body {
   margin-top: 1.2rem !important;
   line-height: 1.15 !important;
   word-break: break-word;
+}
+
+.card-meta-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 2.2rem;
+  margin-bottom: 1.2rem;
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.1rem;
+  color: #888;
+  gap: 0.2rem;
+}
+.card-meta-bottom p {
+  margin: 0;
+  font-weight: 400;
+}
+.card-meta-bottom strong {
+  font-weight: 700;
+  color: #ff6b9d;
+  font-size: 1.05em;
 } 

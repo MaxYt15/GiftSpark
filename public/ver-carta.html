@@ -13,11 +13,11 @@
     <!-- Animación de regalo/caja inicial -->
     <div id="gift-animation-container">
         <div id="gift-box">
+            <span class="gift-text">¡Haz click para abrir tu regalo!</span>
             <div class="box-lid"></div>
             <div class="box-base"></div>
             <div class="box-ribbon"></div>
             <div class="box-bow"></div>
-            <span class="gift-text">¡Haz click para abrir tu regalo!</span>
         </div>
     </div>
     <!-- Contenedor de la Carta (oculto al inicio) -->
@@ -26,11 +26,6 @@
             <!-- Encabezado de la Carta -->
             <div class="card-header">
                 <h1 id="card-title">Cargando carta...</h1>
-                <div class="card-meta">
-                    <p><strong>Para:</strong> <span id="card-recipient">-</span></p>
-                    <p><strong>De:</strong> <span id="card-sender">-</span></p>
-                    <p><strong>Tipo:</strong> <span id="card-type">-</span></p>
-                </div>
             </div>
             <!-- Controles de Música -->
             <div class="music-controls" id="music-controls" style="display: none;">
@@ -66,6 +61,12 @@
             <div class="card-message" id="card-message" style="display: none;">
                 <h3>Mensaje Especial</h3>
                 <p id="message-text"></p>
+            </div>
+            <!-- Nueva ubicación de card-meta -->
+            <div class="card-meta card-meta-bottom">
+                <p><strong>Para:</strong> <span id="card-recipient">-</span></p>
+                <p><strong>De:</strong> <span id="card-sender">-</span></p>
+                <p><strong>Tipo:</strong> <span id="card-type">-</span></p>
             </div>
             <!-- Acciones -->
             <div class="card-actions">

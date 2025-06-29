@@ -255,124 +255,169 @@ function setupMediaTools() {
     const imageUpload = document.getElementById('image-upload');
     const musicUpload = document.getElementById('music-upload');
     
-    addImageBtn.addEventListener('click', () => {
-        imageUpload.click();
-    });
+    if (addImageBtn && imageUpload) {
+        addImageBtn.addEventListener('click', () => imageUpload.click());
+        imageUpload.addEventListener('change', handleImageUpload);
+    }
     
-    addMusicBtn.addEventListener('click', () => {
-        musicUpload.click();
-    });
-    
-    // Manejar subida de imágenes
-    imageUpload.addEventListener('change', handleImageUpload);
-    
-    // Manejar subida de música
-    musicUpload.addEventListener('change', handleMusicUpload);
+    if (addMusicBtn && musicUpload) {
+        addMusicBtn.addEventListener('click', () => musicUpload.click());
+        musicUpload.addEventListener('change', handleMusicUpload);
+    }
 }
 
-// Manejar subida de imágenes
+// Manejar subida de imagen con validación
 function handleImageUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
     
-    // Verificar tipo de archivo
-    if (!file.type.startsWith('image/')) {
-        showNotification('Por favor selecciona un archivo de imagen válido.', 'error');
+    // Validaciones de imagen
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    
+    if (!allowedTypes.includes(file.type)) {
+        showNotification('Solo se permiten imágenes en formato JPG, PNG, GIF o WebP', 'error');
         return;
     }
     
-    // Verificar tamaño (máximo 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-        showNotification('La imagen debe ser menor a 5MB.', 'error');
+    if (file.size > maxSize) {
+        showNotification('La imagen no puede ser mayor a 5MB', 'error');
         return;
     }
     
+    // Validar dimensiones
+    const img = new Image();
+    img.onload = function() {
+        if (this.width > 1920 || this.height > 1080) {
+            showNotification('La imagen no puede ser mayor a 1920x1080 píxeles', 'error');
+            return;
+        }
+        
+        // Procesar imagen válida
+        processImage(file);
+    };
+    
+    img.onerror = function() {
+        showNotification('Error al cargar la imagen', 'error');
+    };
+    
+    img.src = URL.createObjectURL(file);
+}
+
+// Procesar imagen válida
+function processImage(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const imageData = e.target.result;
         
-        // Crear elemento de imagen
+        // Agregar imagen al contenedor
         const imageItem = document.createElement('div');
         imageItem.className = 'image-item';
+        imageItem.innerHTML = `
+            <img src="${imageData}" alt="Imagen de la carta">
+            <button class="remove-image" onclick="removeImage(this)">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
         
-        const img = document.createElement('img');
-        img.src = imageData;
-        img.alt = 'Imagen de la carta';
-        
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-image';
-        removeBtn.innerHTML = '×';
-        removeBtn.onclick = () => {
-            imageItem.remove();
-            updateCardImages();
-        };
-        
-        imageItem.appendChild(img);
-        imageItem.appendChild(removeBtn);
         imageContainer.appendChild(imageItem);
         
-        // Guardar en cardData
-        updateCardImages();
+        // Agregar a cardData
+        if (!cardData.images) cardData.images = [];
+        cardData.images.push(imageData);
         
-        showNotification('Imagen agregada exitosamente!', 'success');
+        showNotification('Imagen agregada exitosamente', 'success');
     };
     
     reader.readAsDataURL(file);
 }
 
-// Actualizar imágenes en cardData
-function updateCardImages() {
-    const images = [];
-    const imageItems = imageContainer.querySelectorAll('.image-item img');
-    imageItems.forEach(img => {
-        images.push(img.src);
-    });
-    cardData.images = images;
-}
-
-// Manejar subida de música
+// Manejar subida de música con validación
 function handleMusicUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
     
-    // Verificar tipo de archivo
-    if (!file.type.startsWith('audio/')) {
-        showNotification('Por favor selecciona un archivo de audio válido.', 'error');
+    // Validaciones de música
+    const allowedTypes = ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxDuration = 240; // 4 minutos
+    
+    if (!allowedTypes.includes(file.type)) {
+        showNotification('Solo se permiten archivos de audio en formato MP3, WAV, OGG o M4A', 'error');
         return;
     }
     
-    // Verificar duración (máximo 4 minutos)
-    const audio = new Audio();
-    audio.src = URL.createObjectURL(file);
+    if (file.size > maxSize) {
+        showNotification('El archivo de música no puede ser mayor a 10MB', 'error');
+        return;
+    }
     
-    audio.addEventListener('loadedmetadata', () => {
-        const duration = audio.duration;
-        if (duration > 240) { // 4 minutos = 240 segundos
-            showNotification('La música debe ser menor a 4 minutos.', 'error');
+    // Validar duración
+    const audio = new Audio();
+    audio.onloadedmetadata = function() {
+        if (this.duration > maxDuration) {
+            showNotification('La música no puede ser mayor a 4 minutos', 'error');
             return;
         }
         
-        // Convertir a base64
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const musicData = e.target.result;
-            
-            cardData.music = {
-                data: musicData,
-                name: file.name,
-                duration: formatDuration(duration)
-            };
-            
-            // Mostrar información de la música
-            musicName.textContent = file.name;
-            musicDuration.textContent = formatDuration(duration);
-            musicInfo.style.display = 'block';
-            
-            showNotification('Música agregada exitosamente!', 'success');
+        // Procesar música válida
+        processMusic(file, this.duration);
+    };
+    
+    audio.onerror = function() {
+        showNotification('Error al cargar el archivo de música', 'error');
+    };
+    
+    audio.src = URL.createObjectURL(file);
+}
+
+// Procesar música válida
+function processMusic(file, duration) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const musicData = e.target.result;
+        
+        // Actualizar información de música
+        musicName.textContent = file.name;
+        musicDuration.textContent = formatDuration(duration);
+        musicInfo.style.display = 'flex';
+        
+        // Agregar a cardData
+        cardData.music = {
+            name: file.name,
+            data: musicData,
+            duration: duration
         };
         
-        reader.readAsDataURL(file);
-    });
+        showNotification('Música agregada exitosamente', 'success');
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// Remover imagen
+function removeImage(button) {
+    const imageItem = button.parentElement;
+    const img = imageItem.querySelector('img');
+    const imageSrc = img.src;
+    
+    // Remover de cardData
+    if (cardData.images) {
+        const index = cardData.images.indexOf(imageSrc);
+        if (index > -1) {
+            cardData.images.splice(index, 1);
+        }
+    }
+    
+    imageItem.remove();
+    showNotification('Imagen removida', 'success');
+}
+
+// Remover música
+function removeMusic() {
+    musicInfo.style.display = 'none';
+    cardData.music = null;
+    showNotification('Música removida', 'success');
 }
 
 // Formatear duración
@@ -396,7 +441,15 @@ function setupFormHandlers() {
     document.getElementById('view-card').addEventListener('click', viewCard);
     document.getElementById('create-another').addEventListener('click', createAnother);
     document.getElementById('go-home').addEventListener('click', goHome);
-    document.getElementById('copy-link').addEventListener('click', copyLink);
+    const copyLinkBtn = document.getElementById('copy-link');
+    if (copyLinkBtn) {
+        copyLinkBtn.addEventListener('click', () => {
+            const input = document.getElementById('private-link-input');
+            input.select();
+            document.execCommand('copy');
+            showNotification('¡Enlace copiado!', 'success');
+        });
+    }
 }
 
 // Guardar carta
@@ -575,15 +628,6 @@ function goHome() {
     window.location.href = '/';
 }
 
-// Copiar enlace
-function copyLink() {
-    const linkInput = document.getElementById('private-link-input');
-    linkInput.select();
-    linkInput.setSelectionRange(0, 99999);
-    document.execCommand('copy');
-    showNotification('Enlace copiado al portapapeles!', 'success');
-}
-
 // Mostrar notificaciones
 function showNotification(message, type) {
     const notification = document.createElement('div');
@@ -622,4 +666,8 @@ function showNotification(message, type) {
             document.body.removeChild(notification);
         }, 300);
     }, 3000);
-} 
+}
+
+// Hacer funciones disponibles globalmente
+window.removeImage = removeImage;
+window.removeMusic = removeMusic; 

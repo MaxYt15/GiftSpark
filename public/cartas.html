@@ -12,18 +12,20 @@
 <body>
     <!-- Header con navegación -->
     <header class="header">
-        <nav class="nav">
-            <div class="logo">
-                <i class="fas fa-gift"></i>
-                <span>GiftSpark</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Inicio</a></li>
-                <li><a href="index.html#gifts" class="nav-link">Regalos</a></li>
-                <li><a href="index.html#cards" class="nav-link">Cartas</a></li>
-                <li><a href="index.html#create" class="nav-link">Crear</a></li>
-            </ul>
-        </nav>
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <i class="fas fa-gift"></i>
+                    <span>GiftSpark</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link">Inicio</a></li>
+                    <li><a href="index.html#gifts" class="nav-link">Regalos</a></li>
+                    <li><a href="index.html#cards" class="nav-link">Cartas</a></li>
+                    <li><a href="index.html#create" class="nav-link">Crear</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
     <!-- Editor de Cartas -->
@@ -83,6 +85,9 @@
                     <div id="music-info" class="music-info" style="display: none;">
                         <span id="music-name"></span>
                         <span id="music-duration"></span>
+                        <button id="remove-music" class="tool-btn danger" onclick="removeMusic()">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </div>
             </div>

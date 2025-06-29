@@ -54,12 +54,25 @@ document.addEventListener('DOMContentLoaded', function() {
 // Cargar carta
 async function loadCard() {
     try {
-        // Obtener el código de la URL
+        // Obtener el código de la URL de múltiples formas
         const urlParams = new URLSearchParams(window.location.search);
-        const cardCode = urlParams.get('code') || getCardCodeFromPath();
+        let cardCode = urlParams.get('code') || urlParams.get('id');
+        
+        // Si no está en query params, intentar obtener de la ruta
+        if (!cardCode) {
+            cardCode = getCardCodeFromPath();
+        }
         
         if (!cardCode) {
-            showError('No se encontró el código de la carta.');
+            showError('No se encontró el código de la carta. Verifica que la URL sea correcta.');
+            return;
+        }
+        
+        // Limpiar el código (remover caracteres especiales)
+        cardCode = cardCode.trim().replace(/[^a-zA-Z0-9]/g, '');
+        
+        if (cardCode.length === 0) {
+            showError('El código de la carta no es válido.');
             return;
         }
         
@@ -72,6 +85,7 @@ async function loadCard() {
             
             snapshot.forEach((childSnapshot) => {
                 const card = childSnapshot.val();
+                // Buscar por código privado o ID
                 if (card.privateCode === cardCode || childSnapshot.key === cardCode) {
                     foundCard = {
                         id: childSnapshot.key,
@@ -94,7 +108,7 @@ async function loadCard() {
                 });
                 
             } else {
-                showError('La carta no fue encontrada o ha sido eliminada.');
+                showError('La carta no fue encontrada. Verifica que el código sea correcto.');
             }
         } else {
             showError('No se encontraron cartas en la base de datos.');
@@ -102,15 +116,33 @@ async function loadCard() {
         
     } catch (error) {
         console.error('Error loading card:', error);
-        showError('Error al cargar la carta. Inténtalo de nuevo.');
+        
+        // Manejo específico de errores
+        if (error.code === 'PERMISSION_DENIED') {
+            showError('No tienes permisos para ver esta carta.');
+        } else if (error.code === 'UNAVAILABLE') {
+            showError('Servicio no disponible. Verifica tu conexión a internet.');
+        } else {
+            showError('Error al cargar la carta. Inténtalo de nuevo.');
+        }
     }
 }
 
-// Obtener código de la carta desde la ruta
+// Obtener código de la carta desde la ruta de manera más robusta
 function getCardCodeFromPath() {
     const path = window.location.pathname;
-    const parts = path.split('/');
-    return parts[parts.length - 1];
+    const parts = path.split('/').filter(part => part.length > 0);
+    
+    // Buscar el último segmento que parezca un código
+    for (let i = parts.length - 1; i >= 0; i--) {
+        const part = parts[i];
+        // Verificar si es un código válido (8 caracteres alfanuméricos o ID de Firebase)
+        if (part.length >= 8 && /^[a-zA-Z0-9]+$/.test(part)) {
+            return part;
+        }
+    }
+    
+    return null;
 }
 
 // Mostrar carta
@@ -165,6 +197,11 @@ function displayCard(card) {
     
     // Configurar botones
     setupButtons(card);
+    // Mostrar número de likes si existe
+    const likeCount = likeBtn.querySelector('#like-count');
+    if (likeCount) {
+        likeCount.textContent = card.likes ? `(${card.likes})` : '';
+    }
 }
 
 // Configurar música
@@ -288,8 +325,11 @@ async function likeCard(cardId) {
             
             await update(cardRef, { likes: updatedLikes });
             
-            // Actualizar botón
-            likeBtn.innerHTML = `<i class="fas fa-heart"></i> Me gusta (${updatedLikes})`;
+            // Actualizar solo el texto y contador del botón, nunca el header
+            const likeText = likeBtn.querySelector('.like-text');
+            const likeCount = likeBtn.querySelector('#like-count');
+            if (likeText) likeText.textContent = 'Me gusta';
+            if (likeCount) likeCount.textContent = `(${updatedLikes})`;
             likeBtn.style.background = 'var(--secondary-color)';
             
             // Log analytics

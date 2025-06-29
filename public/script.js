@@ -20,10 +20,11 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const analytics = getAnalytics(app);
 
-// Variables globales
+// Variables globales con mejor gestión
 let currentTab = 'gift';
 let gifts = [];
 let cards = [];
+let firebaseUnsubscribers = []; // Para cleanup de listeners
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
@@ -31,11 +32,19 @@ document.addEventListener('DOMContentLoaded', function() {
     setupFirebaseListeners();
 });
 
-// Configurar listeners de Firebase
+// Cleanup cuando se desmonta la página
+window.addEventListener('beforeunload', function() {
+    cleanupFirebaseListeners();
+});
+
+// Configurar listeners de Firebase con cleanup
 function setupFirebaseListeners() {
+    // Limpiar listeners anteriores
+    cleanupFirebaseListeners();
+    
     // Listener para regalos en tiempo real
     const giftsRef = ref(database, 'gifts');
-    onValue(giftsRef, (snapshot) => {
+    const giftsUnsubscribe = onValue(giftsRef, (snapshot) => {
         if (snapshot.exists()) {
             gifts = [];
             snapshot.forEach((childSnapshot) => {
@@ -51,11 +60,14 @@ function setupFirebaseListeners() {
         }
     }, (error) => {
         console.error('Error listening to gifts:', error);
+        showErrorMessage('Error al cargar los regalos. Verifica tu conexión.');
     });
+    
+    firebaseUnsubscribers.push(giftsUnsubscribe);
 
     // Listener para cartas en tiempo real
     const cardsRef = ref(database, 'cards');
-    onValue(cardsRef, (snapshot) => {
+    const cardsUnsubscribe = onValue(cardsRef, (snapshot) => {
         if (snapshot.exists()) {
             cards = [];
             snapshot.forEach((childSnapshot) => {
@@ -71,17 +83,76 @@ function setupFirebaseListeners() {
         }
     }, (error) => {
         console.error('Error listening to cards:', error);
+        showErrorMessage('Error al cargar las cartas. Verifica tu conexión.');
     });
+    
+    firebaseUnsubscribers.push(cardsUnsubscribe);
 }
 
-// Función de inicialización
+// Limpiar listeners de Firebase
+function cleanupFirebaseListeners() {
+    firebaseUnsubscribers.forEach(unsubscribe => {
+        if (typeof unsubscribe === 'function') {
+            unsubscribe();
+        }
+    });
+    firebaseUnsubscribers = [];
+}
+
+// Función de inicialización mejorada
 function initializeUI() {
     setupEventListeners();
     setupAnimations();
+    
+    // Mostrar estado de carga
+    showLoadingState();
+}
+
+// Mostrar estado de carga
+function showLoadingState() {
+    const giftsContainer = document.getElementById('gifts-container');
+    const cardsContainer = document.getElementById('cards-container');
+    
+    if (giftsContainer) {
+        giftsContainer.innerHTML = `
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando regalos...</p>
+            </div>
+        `;
+    }
+    
+    if (cardsContainer) {
+        cardsContainer.innerHTML = `
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando cartas...</p>
+            </div>
+        `;
+    }
 }
 
 // Configurar event listeners
 function setupEventListeners() {
+    // Menú hamburguesa
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+    
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+        
+        // Cerrar menú al hacer click en un enlace
+        navLinks.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+    }
+
     // Tabs de creación
     const tabBtns = document.querySelectorAll('.tab-btn');
     tabBtns.forEach(btn => {
@@ -89,8 +160,15 @@ function setupEventListeners() {
     });
 
     // Formularios
-    document.getElementById('gift-form').addEventListener('submit', handleGiftSubmit);
-    document.getElementById('card-form').addEventListener('submit', handleCardSubmit);
+    const giftForm = document.getElementById('gift-form');
+    const cardForm = document.getElementById('card-form');
+    
+    if (giftForm) {
+        giftForm.addEventListener('submit', handleGiftSubmit);
+    }
+    if (cardForm) {
+        cardForm.addEventListener('submit', handleCardSubmit);
+    }
 
     // Categorías
     const categoryCards = document.querySelectorAll('.category-card');
@@ -102,14 +180,19 @@ function setupEventListeners() {
     const modal = document.getElementById('modal');
     const closeBtn = document.querySelector('.close');
     
-    closeBtn.addEventListener('click', closeModal);
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+    
+    if (modal) {
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    }
 
     // Navegación suave
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
+    const navLinksAll = document.querySelectorAll('.nav-link[href^="#"]');
+    navLinksAll.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
@@ -186,13 +269,58 @@ function selectCategory(type) {
 async function handleGiftSubmit(e) {
     e.preventDefault();
     
+    // Validación de campos
+    const title = document.getElementById('gift-title').value.trim();
+    const type = document.getElementById('gift-type').value;
+    const recipient = document.getElementById('gift-recipient').value.trim();
+    const sender = document.getElementById('gift-sender').value.trim();
+    const description = document.getElementById('gift-description').value.trim();
+    const message = document.getElementById('gift-message').value.trim();
+    
+    // Validaciones específicas
+    if (!title) {
+        showErrorMessage('Por favor ingresa un título para tu regalo');
+        document.getElementById('gift-title').focus();
+        return;
+    }
+    
+    if (!type) {
+        showErrorMessage('Por favor selecciona el tipo de regalo');
+        document.getElementById('gift-type').focus();
+        return;
+    }
+    
+    if (!recipient) {
+        showErrorMessage('Por favor ingresa el nombre de la persona');
+        document.getElementById('gift-recipient').focus();
+        return;
+    }
+    
+    if (!sender) {
+        showErrorMessage('Por favor ingresa tu nombre');
+        document.getElementById('gift-sender').focus();
+        return;
+    }
+    
+    if (!description) {
+        showErrorMessage('Por favor describe tu regalo virtual');
+        document.getElementById('gift-description').focus();
+        return;
+    }
+    
+    if (!message) {
+        showErrorMessage('Por favor escribe un mensaje personal');
+        document.getElementById('gift-message').focus();
+        return;
+    }
+    
     const formData = {
-        title: document.getElementById('gift-title').value,
-        type: document.getElementById('gift-type').value,
-        recipient: document.getElementById('gift-recipient').value,
-        sender: document.getElementById('gift-sender').value,
-        description: document.getElementById('gift-description').value,
-        message: document.getElementById('gift-message').value
+        title,
+        type,
+        recipient,
+        sender,
+        description,
+        message
     };
     
     try {
@@ -212,8 +340,18 @@ async function handleGiftSubmit(e) {
         });
         
     } catch (error) {
-        showErrorMessage('Error al crear el regalo. Inténtalo de nuevo.');
-        console.error('Error:', error);
+        console.error('Error creating gift:', error);
+        
+        // Manejo específico de errores
+        if (error.code === 'PERMISSION_DENIED') {
+            showErrorMessage('No tienes permisos para crear regalos. Verifica tu conexión.');
+        } else if (error.code === 'UNAVAILABLE') {
+            showErrorMessage('Servicio no disponible. Verifica tu conexión a internet.');
+        } else if (error.code === 'QUOTA_EXCEEDED') {
+            showErrorMessage('Se ha excedido el límite de regalos. Inténtalo más tarde.');
+        } else {
+            showErrorMessage(`Error al crear el regalo: ${error.message}`);
+        }
     }
 }
 
@@ -221,13 +359,52 @@ async function handleGiftSubmit(e) {
 async function handleCardSubmit(e) {
     e.preventDefault();
     
+    // Validación de campos
+    const title = document.getElementById('card-title').value.trim();
+    const type = document.getElementById('card-type').value;
+    const recipient = document.getElementById('card-recipient').value.trim();
+    const sender = document.getElementById('card-sender').value.trim();
+    const design = document.getElementById('card-design').value;
+    const content = document.getElementById('card-content').value.trim();
+    
+    // Validaciones específicas
+    if (!title) {
+        showErrorMessage('Por favor ingresa un título para tu carta');
+        document.getElementById('card-title').focus();
+        return;
+    }
+    
+    if (!type) {
+        showErrorMessage('Por favor selecciona el tipo de carta');
+        document.getElementById('card-type').focus();
+        return;
+    }
+    
+    if (!recipient) {
+        showErrorMessage('Por favor ingresa el nombre de la persona');
+        document.getElementById('card-recipient').focus();
+        return;
+    }
+    
+    if (!sender) {
+        showErrorMessage('Por favor ingresa tu nombre');
+        document.getElementById('card-sender').focus();
+        return;
+    }
+    
+    if (!content) {
+        showErrorMessage('Por favor escribe el contenido de tu carta');
+        document.getElementById('card-content').focus();
+        return;
+    }
+    
     const formData = {
-        title: document.getElementById('card-title').value,
-        type: document.getElementById('card-type').value,
-        recipient: document.getElementById('card-recipient').value,
-        sender: document.getElementById('card-sender').value,
-        design: document.getElementById('card-design').value,
-        content: document.getElementById('card-content').value
+        title,
+        type,
+        recipient,
+        sender,
+        design,
+        content
     };
     
     try {
@@ -248,8 +425,18 @@ async function handleCardSubmit(e) {
         });
         
     } catch (error) {
-        showErrorMessage('Error al crear la carta. Inténtalo de nuevo.');
-        console.error('Error:', error);
+        console.error('Error creating card:', error);
+        
+        // Manejo específico de errores
+        if (error.code === 'PERMISSION_DENIED') {
+            showErrorMessage('No tienes permisos para crear cartas. Verifica tu conexión.');
+        } else if (error.code === 'UNAVAILABLE') {
+            showErrorMessage('Servicio no disponible. Verifica tu conexión a internet.');
+        } else if (error.code === 'QUOTA_EXCEEDED') {
+            showErrorMessage('Se ha excedido el límite de cartas. Inténtalo más tarde.');
+        } else {
+            showErrorMessage(`Error al crear la carta: ${error.message}`);
+        }
     }
 }
 
@@ -556,46 +743,36 @@ function showErrorMessage(message) {
 }
 
 // Mostrar notificaciones
-function showNotification(message, type) {
-    // Crear elemento de notificación
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+function showNotification(message, type = 'success') {
+    // Eliminar toast anterior si existe
+    const prev = document.querySelector('.toast-gs');
+    if (prev) prev.remove();
+
+    // Crear el toast
+    const toast = document.createElement('div');
+    toast.className = `toast-gs toast-${type}`;
+    toast.innerHTML = `
+        <span class="toast-gs-icon">${type === 'success' ? '✔️' : '⚠️'}</span>
         <span>${message}</span>
+        <button class="toast-gs-close" aria-label="Cerrar">&times;</button>
     `;
-    
-    // Estilos para la notificación
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#4ecdc4' : '#ff6b9d'};
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        z-index: 3000;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        transform: translateX(400px);
-        transition: transform 0.3s ease;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Animar entrada
+    document.body.appendChild(toast);
+
+    // Mostrar con animación
+    setTimeout(() => toast.classList.add('toast-gs-show'), 50);
+
+    // Cerrar al hacer click en la X
+    toast.querySelector('.toast-gs-close').onclick = () => {
+        toast.classList.remove('toast-gs-show');
+        setTimeout(() => toast.remove(), 350);
+    };
+
+    // Cerrar automáticamente a los 3s
     setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Remover después de 3 segundos
-    setTimeout(() => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
+        if (toast.parentNode) {
+            toast.classList.remove('toast-gs-show');
+            setTimeout(() => toast.remove(), 350);
+        }
     }, 3000);
 }
 
@@ -609,4 +786,6 @@ window.likeGift = likeGift;
 window.likeCard = likeCard;
 window.shareGift = shareGift;
 window.shareCard = shareCard;
-window.scrollToSection = scrollToSection; 
+window.scrollToSection = scrollToSection;
+window.removeImage = removeImage;
+window.removeMusic = removeMusic; 

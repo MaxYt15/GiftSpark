@@ -6,6 +6,10 @@ import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, get, set, update, query, orderByChild, equalTo } from 'firebase/database';
+import dotenv from 'dotenv';
+
+// Cargar variables de entorno
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,16 +17,16 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Firebase configuration
+// Firebase configuration con variables de entorno
 const firebaseConfig = {
-  apiKey: "AIzaSyDzj_z2GhjWtrxBfzbyQd9Yq0y76tTJx4I",
-  authDomain: "gift-spark-b7c70.firebaseapp.com",
-  projectId: "gift-spark-b7c70",
-  storageBucket: "gift-spark-b7c70.firebasestorage.app",
-  messagingSenderId: "775684044370",
-  appId: "1:775684044370:web:f4e573c1f5517c3795918b",
-  measurementId: "G-NC2JKQYJTY",
-  databaseURL: "https://gift-spark-b7c70-default-rtdb.firebaseio.com"
+  apiKey: process.env.FIREBASE_API_KEY || "AIzaSyDzj_z2GhjWtrxBfzbyQd9Yq0y76tTJx4I",
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN || "gift-spark-b7c70.firebaseapp.com",
+  projectId: process.env.FIREBASE_PROJECT_ID || "gift-spark-b7c70",
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "gift-spark-b7c70.firebasestorage.app",
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "775684044370",
+  appId: process.env.FIREBASE_APP_ID || "1:775684044370:web:f4e573c1f5517c3795918b",
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID || "G-NC2JKQYJTY",
+  databaseURL: process.env.FIREBASE_DATABASE_URL || "https://gift-spark-b7c70-default-rtdb.firebaseio.com"
 };
 
 // Initialize Firebase
@@ -34,6 +38,72 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static('public'));
+
+// Middleware de validación
+function validateGiftData(data) {
+    const errors = [];
+    
+    if (!data.title || data.title.trim().length === 0) {
+        errors.push('El título es requerido');
+    }
+    if (!data.type || data.type.trim().length === 0) {
+        errors.push('El tipo es requerido');
+    }
+    if (!data.recipient || data.recipient.trim().length === 0) {
+        errors.push('El destinatario es requerido');
+    }
+    if (!data.sender || data.sender.trim().length === 0) {
+        errors.push('El remitente es requerido');
+    }
+    if (!data.description || data.description.trim().length === 0) {
+        errors.push('La descripción es requerida');
+    }
+    if (!data.message || data.message.trim().length === 0) {
+        errors.push('El mensaje es requerido');
+    }
+    
+    return errors;
+}
+
+function validateCardData(data) {
+    const errors = [];
+    
+    if (!data.title || data.title.trim().length === 0) {
+        errors.push('El título es requerido');
+    }
+    if (!data.type || data.type.trim().length === 0) {
+        errors.push('El tipo es requerido');
+    }
+    if (!data.recipient || data.recipient.trim().length === 0) {
+        errors.push('El destinatario es requerido');
+    }
+    if (!data.sender || data.sender.trim().length === 0) {
+        errors.push('El remitente es requerido');
+    }
+    if (!data.content || data.content.trim().length === 0) {
+        errors.push('El contenido es requerido');
+    }
+    
+    return errors;
+}
+
+// Función para sanitizar datos
+function sanitizeData(data) {
+    const sanitized = {};
+    for (const [key, value] of Object.entries(data)) {
+        if (typeof value === 'string') {
+            // Remover scripts y HTML peligroso
+            sanitized[key] = value
+                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                .replace(/javascript:/gi, '')
+                .replace(/on\w+\s*=/gi, '')
+                .trim();
+        } else {
+            sanitized[key] = value;
+        }
+    }
+    return sanitized;
+}
 
 // Rutas de páginas
 app.get('/', (req, res) => {
@@ -79,14 +149,25 @@ app.get('/api/gifts', async (req, res) => {
 
 app.post('/api/gifts', async (req, res) => {
     try {
-        const { title, description, type, recipient, message, sender } = req.body;
+        // Validar datos de entrada
+        const validationErrors = validateGiftData(req.body);
+        if (validationErrors.length > 0) {
+            return res.status(400).json({ 
+                error: 'Datos inválidos', 
+                details: validationErrors 
+            });
+        }
+        
+        // Sanitizar datos
+        const sanitizedData = sanitizeData(req.body);
+        
         const newGift = {
-            title,
-            description,
-            type,
-            recipient,
-            message,
-            sender,
+            title: sanitizedData.title,
+            description: sanitizedData.description,
+            type: sanitizedData.type,
+            recipient: sanitizedData.recipient,
+            message: sanitizedData.message,
+            sender: sanitizedData.sender,
             createdAt: new Date().toISOString(),
             likes: 0
         };
@@ -135,38 +216,36 @@ app.get('/api/cards', async (req, res) => {
 
 app.post('/api/cards', async (req, res) => {
     try {
-        const { 
-            title, 
-            content, 
-            type, 
-            recipient, 
-            sender, 
-            design, 
-            visibility, 
-            message, 
-            images, 
-            music, 
-            drawing 
-        } = req.body;
+        // Validar datos de entrada
+        const validationErrors = validateCardData(req.body);
+        if (validationErrors.length > 0) {
+            return res.status(400).json({ 
+                error: 'Datos inválidos', 
+                details: validationErrors 
+            });
+        }
+        
+        // Sanitizar datos
+        const sanitizedData = sanitizeData(req.body);
         
         const newCard = {
-            title,
-            content,
-            type,
-            recipient,
-            sender,
-            design,
-            visibility,
-            message,
-            images: images || [],
-            music: music || null,
-            drawing: drawing || null,
+            title: sanitizedData.title,
+            content: sanitizedData.content,
+            type: sanitizedData.type,
+            recipient: sanitizedData.recipient,
+            sender: sanitizedData.sender,
+            design: sanitizedData.design || 'romantic',
+            visibility: sanitizedData.visibility || 'public',
+            message: sanitizedData.message || '',
+            images: sanitizedData.images || [],
+            music: sanitizedData.music || null,
+            drawing: sanitizedData.drawing || null,
             createdAt: new Date().toISOString(),
             likes: 0
         };
         
         // Generar código privado si es necesario
-        if (visibility === 'private') {
+        if (newCard.visibility === 'private') {
             newCard.privateCode = generatePrivateCode();
         }
         

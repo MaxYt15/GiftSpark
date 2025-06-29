@@ -11,9 +11,25 @@
 <body>
     <!-- Header solo con el logo alineado a la izquierda -->
     <header class="header">
-        <div class="logo">
-            <i class="fas fa-gift"></i>
-            <span>GiftSpark</span>
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <i class="fas fa-gift"></i>
+                    <span>GiftSpark</span>
+                </div>
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="#home" class="nav-link">Inicio</a></li>
+                    <li><a href="#gifts" class="nav-link">Regalos</a></li>
+                    <li><a href="#cards" class="nav-link">Cartas</a></li>
+                    <li><a href="#create" class="nav-link">Crear</a></li>
+                    <li><a href="/cartas" class="nav-link special">Editor Avanzado</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 

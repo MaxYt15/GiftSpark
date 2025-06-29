@@ -1,10 +1,13 @@
 /* Estilos específicos para la página de cartas */
 
-html, body {
-    width: 100vw;
-    min-width: 0;
-    max-width: 100vw;
-    overflow-x: hidden;
+html, body, .card-editor-container, .workspace, .modal, .modal-content, .success-modal, .success-modal .success-content {
+    width: 100vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .card-editor-container {
@@ -12,9 +15,13 @@ html, body {
     min-width: 0;
     max-width: 100vw;
     overflow-x: hidden;
-    padding-top: 52px;
+    padding-top: 54px !important;
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 /* Barra de Herramientas */
@@ -118,17 +125,16 @@ html, body {
 
 /* Área de Trabajo */
 .workspace {
-    width: 100vw;
+    width: 100%;
+    max-width: 1200px;
     min-width: 0;
-    max-width: 100vw;
-    overflow-x: hidden;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 2rem;
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
+    padding: 2rem 1.5rem;
     box-sizing: border-box;
+    margin-top: 0 !important;
 }
 
 /* Panel de Vista Previa */
@@ -137,6 +143,7 @@ html, body {
     border-radius: 15px;
     padding: 2rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-top: 0 !important;
 }
 
 .preview-panel h3 {
@@ -226,6 +233,7 @@ html, body {
     height: fit-content;
     position: sticky;
     top: 200px;
+    margin-top: 0 !important;
 }
 
 .config-panel h3 {
@@ -429,6 +437,10 @@ html, body {
 
 .success-content {
     padding: 2rem;
+    max-width: 420px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .success-icon {
@@ -464,39 +476,50 @@ html, body {
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
     .workspace {
         grid-template-columns: 1fr;
-        gap: 0;
-        padding: 0;
+        gap: 1rem;
+        padding: 1rem 0.2rem;
         max-width: 100vw;
-        margin: 0;
-        width: 100vw;
-        min-width: 0;
-        box-sizing: border-box;
-    }
-    .preview-panel, .config-panel {
-        width: 100vw;
-        max-width: 100vw;
-        margin: 0;
-        border-radius: 0;
-        box-sizing: border-box;
     }
 }
 
-@media (max-width: 768px) {
-    html, body, .card-editor-container, .workspace {
-        width: 100vw;
-        min-width: 0;
-        max-width: 100vw;
-        overflow-x: hidden;
+@media (max-width: 600px) {
+    html, body, .card-editor-container, .workspace, .modal, .modal-content, .success-modal, .success-modal .success-content {
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .workspace {
+        padding: 0.5rem 0.1rem;
+        gap: 0.5rem;
+    }
+    .modal-content.success-modal {
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+    .success-modal .success-content {
+        width: 100vw !important;
+        min-width: 0 !important;
+        max-width: 100vw !important;
+        padding: 1rem 0.1rem 1.2rem 0.1rem !important;
     }
     .header {
         height: 44px;
         min-height: 44px;
     }
     .card-editor-container {
-        padding-top: 44px;
+        padding-top: 46px !important;
     }
     .toolbar {
         padding: 0.5rem;
@@ -715,4 +738,119 @@ html, body {
     height: 52px;
     min-height: 52px;
     padding: 0;
+}
+
+/* Botones de acción en modales */
+.modal-content .btn,
+.modal-content .btn-primary,
+.modal-content .btn-secondary,
+.modal-content .btn-danger,
+.modal-content .btn-outline {
+    width: 100%;
+    max-width: 220px;
+    min-width: 110px;
+    margin: 0.3rem auto;
+    display: block;
+    box-sizing: border-box;
+    border-radius: 12px;
+    font-size: 1.08rem;
+    padding: 0.7rem 0;
+}
+
+@media (max-width: 480px) {
+    .modal-content .btn,
+    .modal-content .btn-primary,
+    .modal-content .btn-secondary,
+    .modal-content .btn-danger,
+    .modal-content .btn-outline {
+        width: 80vw;
+        max-width: 90vw;
+        min-width: 90px;
+        font-size: 0.97rem;
+        padding: 0.6rem 0;
+        margin: 0.18rem auto;
+    }
+}
+
+.success-actions, .preview-actions {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* MODAL DE ÉXITO - BOTONES CENTRADOS Y RESPONSIVE */
+.success-modal .success-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1.2rem 2rem 1.2rem;
+}
+.success-modal .success-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    width: 100%;
+    margin-top: 1.2rem;
+}
+.success-modal .success-actions .btn {
+    width: 90%;
+    max-width: 260px;
+    min-width: 120px;
+    margin: 0 auto;
+    font-size: 1rem;
+    padding: 0.7rem 0.5rem;
+    border-radius: 12px;
+}
+.success-modal .success-actions .btn + .btn {
+    margin-top: 0.2rem;
+}
+.success-modal .link-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.7rem 0 0.5rem 0;
+}
+.success-modal .link-container input {
+    width: 100%;
+    font-size: 0.98rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 7px;
+    border: 1.5px solid #eee;
+    background: #f8f9fa;
+    text-align: center;
+}
+.success-modal .link-container .btn {
+    min-width: 80px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.95rem;
+}
+@media (max-width: 600px) {
+    .modal-content.success-modal {
+        padding: 0.7rem 0.2rem 1.2rem 0.2rem;
+        min-width: 0;
+        width: 98vw;
+        max-width: 99vw;
+    }
+    .success-modal .success-content {
+        padding: 1rem 0.2rem 1.2rem 0.2rem;
+    }
+    .success-modal .success-actions .btn {
+        width: 98%;
+        max-width: 99vw;
+        font-size: 0.98rem;
+        padding: 0.7rem 0.2rem;
+    }
+    .success-modal .link-container input {
+        font-size: 0.93rem;
+        padding: 0.45rem 0.3rem;
+    }
+    .success-modal .link-container .btn {
+        min-width: 60px;
+        font-size: 0.93rem;
+        padding: 0.45rem 0.3rem;
+    }
 } 

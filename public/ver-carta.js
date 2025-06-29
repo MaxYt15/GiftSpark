@@ -358,11 +358,13 @@ function showNotification(message, type) {
         <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
         <span>${message}</span>
     `;
-    
+    // Cambiar a position absolute y contenedor local
     notification.style.cssText = `
-        position: fixed;
+        position: absolute;
         top: 20px;
-        right: 20px;
+        left: 2.5vw;
+        right: 2.5vw;
+        max-width: 95vw;
         background: ${type === 'success' ? '#4ecdc4' : '#ff6b9d'};
         color: white;
         padding: 1rem 2rem;
@@ -372,20 +374,20 @@ function showNotification(message, type) {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        transform: translateX(400px);
-        transition: transform 0.3s ease;
+        word-break: break-word;
+        transition: opacity 0.3s ease;
+        opacity: 0;
     `;
-    
-    document.body.appendChild(notification);
-    
+    // Insertar en el contenedor principal, no en body
+    const container = document.querySelector('.card-viewer-container') || document.body;
+    container.appendChild(notification);
     setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
+        notification.style.opacity = '1';
     }, 100);
-    
     setTimeout(() => {
-        notification.style.transform = 'translateX(400px)';
+        notification.style.opacity = '0';
         setTimeout(() => {
-            document.body.removeChild(notification);
+            if (notification.parentNode) notification.parentNode.removeChild(notification);
         }, 300);
     }, 3000);
 } 

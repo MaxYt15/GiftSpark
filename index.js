@@ -376,9 +376,26 @@ function generatePrivateCode() {
     return result;
 }
 
-// Middleware para manejar rutas no encontradas
-app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'public', 'index.html'));
+// Middleware para servir archivos estáticos correctamente en cualquier subruta
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Rutas de páginas principales
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+app.get('/cartas', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'cartas.html'));
+});
+app.get('/ver-carta', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'ver-carta.html'));
+});
+app.get('/cartas/:code', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'ver-carta.html'));
+});
+
+// Catch-all para rutas que no sean API ni archivos estáticos
+app.get(/^\/((?!api|\/).)*$/, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Iniciar servidor
